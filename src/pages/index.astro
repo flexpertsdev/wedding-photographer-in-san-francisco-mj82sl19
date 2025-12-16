@@ -1,0 +1,28 @@
+---
+import Hero from '../components/Hero.astro';
+import PortfolioGrid from '../components/PortfolioGrid.astro';
+import SeoMeta from '../components/SeoMeta.astro';
+
+const portfolioItems = [
+  { src: '/images/wedding1.jpg', alt: 'Wedding Photo 1', width: 600, height: 400 },
+  { src: '/images/wedding2.jpg', alt: 'Wedding Photo 2', width: 600, height: 400 },
+  // ... more images
+];
+---
+
+<html lang="en">
+  <head>
+    <SeoMeta title="Wedding Photography" description="Beautiful wedding photography services."/>
+  </head>
+  <body>
+    <Hero
+      title="Capture Your Special Day"
+      subtitle="Professional wedding photography that tells your story."
+      imageSrc="/images/hero.jpg"
+      imageAlt="Couple getting married"
+      ctaText="View Portfolio"
+      ctaLink="/portfolio"
+    />
+    <PortfolioGrid items={portfolioItems} />
+  </body>
+</html>

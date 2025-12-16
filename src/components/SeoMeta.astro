@@ -1,0 +1,39 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string; // Optional image URL for social sharing
+  canonicalURL?: string; //Optional canonical URL for the page
+  ogType?: string; //Type of object, default is website.
+}
+
+const { title, description, image, canonicalURL, ogType = "website" } = Astro.props;
+
+const siteURL = new URL(Astro.site); // Assuming you've configured Astro.site
+
+---
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{title}</title>
+    <meta name="description" content={description}>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={ogType}>
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    {image && <meta property="og:image" content={image} />}
+    <meta property="og:url" content={canonicalURL || siteURL.href + Astro.url.pathname}>
+    <meta property="og:site_name" content={siteURL.hostname}>
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content={image ? "summary_large_image" : "summary"}>
+    <meta property="twitter:title" content={title}>
+    <meta property="twitter:description" content={description}>
+    {image && <meta property="twitter:image" content={image} />}
+    <meta property="twitter:url" content={canonicalURL || siteURL.href + Astro.url.pathname}>
+    <!-- Canonical URL -->
+    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+</head>

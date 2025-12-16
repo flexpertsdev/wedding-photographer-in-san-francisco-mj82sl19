@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import { format } from 'date-fns';
+import BlogPostHeader from '../../components/Blog/BlogPostHeader.astro';
+import AuthorBio from '../../components/Blog/AuthorBio.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog'); // Assuming you have a 'blog' collection
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+  <BlogPostHeader
+    title={post.data.title}
+    date={format(post.data.date, 'MMMM d, yyyy')}
+    categories={post.data.categories}
+  />
+  <Content />
+  <AuthorBio author={post.data.author} />
+</Layout>

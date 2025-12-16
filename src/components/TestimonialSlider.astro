@@ -1,0 +1,140 @@
+---
+interface Testimonial {
+  quote: string;
+  author: string;
+  authorTitle?: string;
+  imageSrc?: string; // Optional author image
+  imageAlt?: string;
+}
+
+interface Props {
+  testimonials: Testimonial[];
+}
+
+const { testimonials } = Astro.props;
+---
+
+<section class="testimonials">
+  <h2>What Our Clients Say</h2>
+  <div class="testimonial-slider">
+    {testimonials.map((testimonial, index) => (
+      <div class="testimonial-slide" data-index={index} aria-hidden={index !== 0 ? "true" : "false"}>  <!-- aria-hidden for accessibility -->
+        <div class="testimonial-content">
+          <p class="quote">&ldquo;{testimonial.quote}&rdquo;</p>
+          <div class="author-info">
+            {testimonial.imageSrc && (
+              <img src={testimonial.imageSrc} alt={testimonial.imageAlt || `Image of ${testimonial.author}`} width="50" height="50" style="border-radius: 50%;" />
+            )}
+            <div>
+              <p class="author">{testimonial.author}</p>
+              {testimonial.authorTitle && <p class="author-title">{testimonial.authorTitle}</p>}
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+    <button class="prev-button" aria-label="Previous Testimonial">Previous</button>
+    <button class="next-button" aria-label="Next Testimonial">Next</button>
+
+  </div>
+</section>
+
+<style>
+.testimonials {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.testimonial-slider {
+  position: relative;
+  overflow: hidden; /* Important for hiding slides */
+}
+
+.testimonial-slide {
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 0 1rem;  /* Spacing between slides */
+  display: none;  /* Hide all slides by default */
+}
+
+.testimonial-slide[aria-hidden="false"] {
+  display: block; /* Only show the active slide */
+}
+
+.quote {
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.author {
+  font-weight: bold;
+}
+
+/* Button Styles (adjust as needed) */
+.prev-button,
+.next-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #333;
+  z-index: 10; /* Ensure buttons are above slides */
+}
+
+.prev-button {
+  left: 1rem;
+}
+
+.next-button {
+  right: 1rem;
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.querySelector('.testimonial-slider');
+    const slides = document.querySelectorAll('.testimonial-slide');
+    const prevButton = document.querySelector('.prev-button');
+    const nextButton = document.querySelector('.next-button');
+
+    if (!slider || !slides || !prevButton || !nextButton) {
+      console.warn('Testimonial slider elements not found.');
+      return;
+    }
+
+    let currentSlide = 0;
+
+    function showSlide(index: number) {
+      slides.forEach((slide, i) => {
+        slide.setAttribute('aria-hidden', i !== index ? 'true' : 'false');
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    showSlide(currentSlide); // Initialize
+
+    nextButton.addEventListener('click', nextSlide);
+    prevButton.addEventListener('click', prevSlide);
+  });
+</script>
